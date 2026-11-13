@@ -375,3 +375,7 @@ When ops hands over the verified set, use every independent node (distinct p2p i
 An alias of a node we already count is not a second target. A node ops has not verified is not a target. Public nodes do not receive malformed input, boundary probes, coinbase rejects, partition filters, or floods. The heavy lane stays on our nodes. The bot still sends only after desk HOLD-3, on a free distinct kaspad, or it writes `NO SEND`.
 
 Until that list is in the review notes as a count of distinct ids, pre-run 29's public half stays unarmed and the bot's plan is no-send.
+
+## P. Changes from REVIEW-01 (binding)
+
+TN10 ops reviewed this plan on 13 Nov 2026: **approved with changes**. See [reviews/REVIEW-01.md](../reviews/REVIEW-01.md). In short: fund each run with 3–10× its planning cap from our own mining wallet as a logged step, and size key 0 on usable coins (BUDGET_CHECK: projected end ≥ 18,000 + 8,000 margin, ≥ 2,500 coins over 3 tKAS); write the disk floor before `PRE-RUN-OPEN`; free check adds `tn10-node.kaspa.com` as a candidate under the same synced / DAA-moving / distinct-identity test, drops timing-out names from the active list but keeps logging them, and treats scan-found raw-address wRPC nodes as read-only, no sends; a "Pace and depth" rule (quality first, one probe at a time, loop on fails); every run gets a tn-master INDEX row and README headline row on completion. The probe order 24–30 stands. Nothing is armed by this section.

@@ -1,5 +1,7 @@
 # Proposal: free-check endpoint rule
 
+> Decided in [REVIEW-01](REVIEW-01.md), change 3: points 1–5 and 7 adopted; `tn10-node.kaspa.com` added as a candidate under the same test; timing-out names dropped from the active list but logged; scan-found wRPC nodes read-only, no sends.
+
 For TN10 ops to review. This file is not a review and not an approval. Nothing here arms a run, a send, or a HOLD-4. Testnet-10 only. Never mainnet.
 
 Source of the counts: tn-master FINDINGS 80 at `4465ac9`, and the run files cited in [findings/PUBLIC-ENDPOINTS.md](../findings/PUBLIC-ENDPOINTS.md).

@@ -3,6 +3,7 @@
 | Revision | Commit | What |
 |---|---|---|
 | draft 1 | `53308964158213ca92ed7836bbbcc0abc6f93b61` | Initial plan for 13 Nov 2026. Not armed. Not reviewed. |
+| review 1 | (this commit) | REVIEW-01: approved with changes; plan section P added. Not armed. |
 
 The review commit, when it exists, is named in `reviews/REVIEW-01.md`. This line is not that review.
 
