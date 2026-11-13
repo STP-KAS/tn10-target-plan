@@ -11,3 +11,5 @@ The older record is a snapshot of [tn-master](https://github.com/STP-KAS/tn-mast
 The note for issue #1 is [findings/PUBLIC-ENDPOINTS.md](findings/PUBLIC-ENDPOINTS.md). The free-check proposal is [reviews/FREE-CHECK-ENDPOINT-RULE.md](reviews/FREE-CHECK-ENDPOINT-RULE.md). It is not an approval.
 
 No secrets, hosts, IP addresses, keys, addresses, covenant ids, or transaction ids.
+
+The Grok Build task list is [tasks/README.md](tasks/README.md). The open item is a native Windows tic-tac-toe guest runner, [tasks/BUILD-TASK-ttt-windows.md](tasks/BUILD-TASK-ttt-windows.md). Those files are not an arming.

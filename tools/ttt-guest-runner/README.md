@@ -63,3 +63,7 @@ The deposit carrier's mass is storage mass, set by its 1 tKAS output. The others
 - **Older pin.** The binaries are `bcebf59` and the guest ELF is a September local build. The plan's named pin is `6d068974`. Moving to it needs a build, which the plan does not allow tonight.
 - **Funding** of the two guest keys, as a logged step from the mining wallet.
 - **`ttd` bootstrap cost** has not been measured, and the DA's `/api/state` field names are read loosely (`arm-guest.sh` aborts with `no-lane-from-da` if it cannot find them).
+
+## Windows runner (open task)
+
+A native Windows build of this kit, so the guest line can run on the desk without WSL, is an open Grok Build task: [tasks/BUILD-TASK-ttt-windows.md](../../tasks/BUILD-TASK-ttt-windows.md). Desk search first; if nothing usable is found, Build compiles from scratch at the same pins named in this README. That task is not an arming.
