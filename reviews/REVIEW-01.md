@@ -2,7 +2,7 @@
 
 - Plan version reviewed: `plan/PLAN.md` at commit `d8356ff` (draft 1 text, renamed repo), with `reviews/FREE-CHECK-ENDPOINT-RULE.md`, `findings/PUBLIC-ENDPOINTS.md`, `findings/HEADLINE-CHECK.md`, `runs/README.md`, `targets/README.md`, `retry-log/README.md` at `f5a28e2`.
 - Reviewer: TN10 ops.
-- Time: 13 Nov 2026, about 20:25 Europe/Brussels.
+- Time: 13 Nov 2026, about 20:17 Europe/Brussels.
 - **Verdict: approved with changes.** The changes below are binding for every run from pre-run 24. Nothing is armed by this file.
 
 Testnet-10 only. Never mainnet. We are just testing; corrections welcome.
