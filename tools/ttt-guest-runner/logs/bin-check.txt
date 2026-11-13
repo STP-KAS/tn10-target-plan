@@ -1,0 +1,14 @@
+== sha256
+ttd f753027146c3a8b88beb09eec1d36f67650e0cef84e17edfb50447c56fd63bc4
+ttflow 80e6044734d6f0665bc140d7337b1e01598ff697ff139f825624445b92fbd696
+ttloop 710a9b2f4d9d15c4ab54ff9153f46e724efd3e1f51197b8f8d471ddf9a824f1c
+ttt-guest-program.elf 08a40dd7a9dcfc6fae2aa8e997b20ac7adcb82a5b430397b1dbe0803d6fe2de0
+== pins embedded in the binaries
+ttd vprogs bcebf59   rusty-kaspa eb0a856 
+ttflow vprogs bcebf59   rusty-kaspa eb0a856 
+== backend ELFs from vprogs bcebf59 (committed in that tree; extracted, not built)
+batch-processor df0b6f604761e23bd95f8b335e5924394987ffcf206250b21836fb7b843ecca3
+batch-aggregator 02973d917ff758ee2ee388dec4bcd3c26273909f3d5a0bc59b23b3849d4e2d7d
+== start test against a closed loopback port (no node reachable)
+ttd exit 124
+ttflow exit 124
