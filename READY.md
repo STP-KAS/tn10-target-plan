@@ -11,7 +11,7 @@ Posted 13 Nov 2026. This is the handoff for the 13 Nov TN10 plan. It is not an a
 
 ## Where
 
-- Repo: https://github.com/STP-KAS/tn10-test-plan-2026-11-13
+- Repo: https://github.com/STP-KAS/tn10-target-plan
 - Plan: `plan/PLAN.md`
 - PDF: `plan/tn10-test-plan-tonight.pdf`
 - History snapshot of tn-master at `26323f66`: `history/snapshot/`

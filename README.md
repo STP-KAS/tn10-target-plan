@@ -1,4 +1,4 @@
-# TN10 test plan, 13 Nov 2026
+# TN10 target plan (target-oriented TN10 test plan; first drafted 13 Nov 2026)
 
 Experimental. Testnet-10 only. tKAS has no value. See [DISCLAIMER.md](DISCLAIMER.md).
 

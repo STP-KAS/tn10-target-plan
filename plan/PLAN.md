@@ -269,7 +269,7 @@ Tonight. One fresh launch name. No relaunch of a family this desk has already pu
 
 ## J. This repo
 
-URL: https://github.com/STP-KAS/tn10-test-plan-2026-11-13
+URL: https://github.com/STP-KAS/tn10-target-plan
 
 Layout:
 
