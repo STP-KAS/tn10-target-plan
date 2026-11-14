@@ -46,16 +46,20 @@ for i in $(seq 1 ${TTT_DA_WAIT_S:-600}); do
   sleep 1
 done
 echo "$S" > "$P/da-state.json"
-LANE=$(node -e 'const s=JSON.parse(process.argv[1]); const f=(o,k)=>o&&typeof o==="object"?(k in o?o[k]:Object.values(o).map(v=>f(v,k)).find(v=>v!==undefined)):undefined; console.log(f(s,"lane_id")??f(s,"lane"))' "$S" 2>/dev/null || true)
-COV=$(node -e 'const s=JSON.parse(process.argv[1]); const f=(o,k)=>o&&typeof o==="object"?(k in o?o[k]:Object.values(o).map(v=>f(v,k)).find(v=>v!==undefined)):undefined; console.log(f(s,"covenant_id"))' "$S" 2>/dev/null || true)
-[ -n "$LANE" ] && [ -n "$COV" ] && [ "$COV" != undefined ] || { ph "GUEST abort reason=no-lane-from-da"; kill "$(cat "$P/ttd.pid")"; exit 6; }
+# Lane id: ttd logs it at start ("lane id=<u32> subnetwork=<hex> ..."). The DA state (/api/state) has covenant_id and lane_subnet
+# but no lane_id field (14 Nov 2026, pre-run 24 retry 1: the old read gave "undefined" and ttflow stopped on its config before
+# sending). Fallback: the first four bytes of lane_subnet, big-endian, which is the same number.
+LANE=$(grep -oE 'lane id=[0-9]+' "$P/ttd.log" | head -1 | cut -d= -f2 || true)
+if [ -z "$LANE" ]; then LANE=$(node -e 'const s=JSON.parse(process.argv[1]); const h=String(s.lane_subnet||""); if(/^[0-9a-f]{8}/i.test(h)) console.log(parseInt(h.slice(0,8),16));' "$S" 2>/dev/null || true); fi
+COV=$(node -e 'const s=JSON.parse(process.argv[1]); if(s.covenant_id) console.log(s.covenant_id)' "$S" 2>/dev/null || true)
+echo "$LANE" | grep -qE '^[0-9]+$' && [ -n "$COV" ] || { ph "GUEST abort reason=no-lane-from-da"; kill "$(cat "$P/ttd.pid")"; exit 6; }
 ph "GUEST lane up"
 # ttflow: Init, then one scripted match (deposit A, deposit B, create, join, turn A, turn B, withdraw), one carrier at a time.
 ( cd "$P" && TT_NETWORK=tn10 TT_LANE_ID=$LANE TT_COVENANT_ID=$COV TTFLOW_PRIVATE_KEY=$OPK TTFLOW_STEP_DELAY_MS=${TTFLOW_STEP_DELAY_MS:-2000} \
   RUST_LOG=info timeout ${TTT_FLOW_TIMEOUT_S:-900} "$BIN/ttflow" > "$P/ttflow.log" 2>&1 ) && RC=0 || RC=$?
 N=$(grep -cE 'Step [0-9.]+ \(.*\) accepted' "$P/ttflow.log" || true)
-FIRST=$(grep -oE 'Step [0-9.]+ \([^)]*\) accepted' "$P/ttflow.log" | head -1 | sed -E 's/ accepted//')
-ERR=$(grep -iE 'rejected|not submitted|error|panic' "$P/ttflow.log" | head -1 | sed -E 's/[0-9a-f]{64}/<id>/g; s/kaspatest:[a-z0-9]+/<addr>/g; s/wss?:\/\/[^ ]+/<node>/g' | cut -c1-200 || true)
+FIRST=$( (grep -oE 'Step [0-9.]+ \([^)]*\) accepted' "$P/ttflow.log" || true) | head -1 | sed -E 's/ accepted//')
+ERR=$( (grep -iE 'rejected|not submitted|error|panic' "$P/ttflow.log" || true) | head -1 | sed -E 's/[0-9a-f]{64}/<id>/g; s/kaspatest:[a-z0-9]+/<addr>/g; s/wss?:\/\/[^ ]+/<node>/g' | cut -c1-200 || true)
 ph "GUEST ttflow exit=$RC carriers_submit_ok=$N first=\"$FIRST\""
 [ -n "$ERR" ] && ph "GUEST first-error \"$ERR\""
 # Leave ttd up until the run's RETURN reads the DA (games finished, no illegal move); the run stops it with stop-guest.sh.

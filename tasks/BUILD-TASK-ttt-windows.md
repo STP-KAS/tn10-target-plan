@@ -4,17 +4,19 @@ For Grok Build. Written by TN10 ops on 14 Nov 2026 (Europe/Brussels). Not armed 
 
 This is a request to produce a native Windows x86_64 runner that can play one tic-tac-toe match against the desk's already-running local TN10 kaspad (2.1.0, loopback only). Heavy work is on the desk. Do not restart, stop, or reconfigure that kaspad.
 
+**Status: open, as a native-Windows backup.** The guest line is already met with the Linux kit in a desk-local container (pre-run 24 retry 1, 8 of 8 carriers). This task stays open in case Docker Desktop is not available on the desk; it is not needed for the next runs.
+
 Hand back a DONE note in this repository when finished. TN10 ops reviews the result before it is used in a run.
 
 ## Goal
 
-Windows x86_64 `.exe` builds of `ttd` and `ttflow` (and `ttloop` only if a usable source for it is found; see below), at the **same pins as the existing Linux kit**, plus the guest ELF, that can play one full match of nine carriers against the local TN10 node:
+Windows x86_64 `.exe` builds of `ttd` and `ttflow` (and `ttloop` only if a usable source for it is found; see below), at the **same pins as the existing Linux kit**, plus the guest ELF, that can play one full match of eight carriers against the local TN10 node:
 
 Init, Deposit A, Deposit B, CreateGame, JoinGame, Turn A, Turn B, Withdraw.
 
 (Transfer is off by default in upstream `ttflow` and should stay off.)
 
-Any one carrier accepted on the desk node would meet the plan's guest line; the runner still records how many of the nine landed, or the exact rejection. Exec mode only: `TT_PROVE=0`, `RISC0_DEV_MODE=1`, no CUDA, no prover, no settler.
+Any one carrier accepted on the desk node would meet the plan's guest line; the runner still records how many of the eight landed, or the exact rejection. Exec mode only: `TT_PROVE=0`, `RISC0_DEV_MODE=1`, no CUDA, no prover, no settler.
 
 ## Pins (do not silently change them)
 
@@ -38,7 +40,7 @@ The plan's named pin is different and is **not** the default for this task: vpro
 
 ## What the existing Linux kit already does
 
-Source of truth: `tools/ttt-guest-runner/` in this repo at `04db647`, and the matching folder used on the box. Nothing in that kit was compiled. It drives binaries that were already on disk. It has not sent anything yet. The offline shape check and one read-only node read are recorded in that folder's README and logs.
+Source of truth: `tools/ttt-guest-runner/` in this repo at `04db647`, and the matching folder used on the box. Nothing in that kit was compiled. It drives binaries that were already on disk. Since 14 Nov 2026 it has sent one live match: in pre-run 24 retry 1 the Linux kit ran in a local Linux container on the desk (Docker Desktop's WSL2 VM) and 8 of 8 carriers were accepted on the desk node. The offline shape check and one read-only node read are recorded in that folder's README and logs.
 
 | File | What it does | Network |
 |---|---|---|
@@ -52,7 +54,7 @@ Source of truth: `tools/ttt-guest-runner/` in this repo at `04db647`, and the ma
 
 `--live` gates, taken from `arm-guest.sh`: a run directory is set; a local env file supplies `TT_WRPC_URL`; there is no STOP file; `ttd`, `ttflow`, the guest ELF and both backend ELFs are present; the read-only check reports `network=testnet-10`, synced, DAA moved; the guest issuer holds 2–4 coins and the guest operator 1–4 coins, each at least `TTT_MIN_COIN_TKAS` (default 20 tKAS). Live also requires the run's own arm file (`control/ARM-GUEST`) written after PRE-RUN-OPEN. The phase log uses fixed tokens only (`GUEST gate ok`, `carriers_submit_ok=N`, first step, first error with ids stripped). Txids, lane and covenant ids stay in the run's private directory.
 
-`ttflow` at `803a120` (`driver/src/scenario.rs`) logs acceptance as `Step N (Name) accepted: {txid}`. The nine default carriers are Step 1 Init, 2 Deposit Player A, 3 Deposit Player B, 4 CreateGame, 5 JoinGame, 6 Turn Player A, 7 Turn Player B, 8 Withdraw. Step 5.5 Transfer runs only when `TTFLOW_TRANSFER_AMOUNT` is set; the default is 0.
+`ttflow` at `803a120` (`driver/src/scenario.rs`) logs acceptance as `Step N (Name) accepted: {txid}`. The eight default carriers are Step 1 Init, 2 Deposit Player A, 3 Deposit Player B, 4 CreateGame, 5 JoinGame, 6 Turn Player A, 7 Turn Player B, 8 Withdraw. Step 5.5 Transfer runs only when `TTFLOW_TRANSFER_AMOUNT` is set; the default is 0.
 
 `ttloop` is a local load runner (header: "grok-bot round 3, 2026-09-26"). It is **not** in biryukovmaxim/vprog-tictactoe at `803a120` or at `d97ee421` (contents request for `driver/src/bin/ttloop.rs` returned 404 at both). One match does not need it. Do not invent a copy or commit a key-path default into this repo. If a usable `ttloop` source or Windows binary turns up on the desk search, it may be ported as an extra; it is not an acceptance requirement for one match.
 

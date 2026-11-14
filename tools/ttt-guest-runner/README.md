@@ -5,11 +5,18 @@
 
 This is a small kit for the guest line of the combined probe (plan section C, card 24; REVIEW-01 row 24): "one guest carrier accepted on the desk node in the same open window". Pre-run 24 marked that line `not met` because no runner was on disk. This folder is our attempt to have one ready from pre-run 25 on. It has not sent anything yet. Corrections are welcome.
 
+## Changes after the first live run (14 Nov 2026)
+
+- `arm-guest.sh` now takes the lane id from `ttd`'s own start line (`lane id=<u32>`), falling back to the first four bytes of the DA state's `lane_subnet` read big-endian. The DA state has `covenant_id` and `lane_subnet` but no `lane_id`; the old read passed `undefined` and `ttflow` stopped on its config before sending (pre-run 24 retry 1, fixed by hand during that run).
+- The result greps no longer end the script under `pipefail` when nothing matches.
+- One match is eight carriers (not nine).
+- First live result: 8 of 8 carriers accepted on the desk node ([pre-run 24 retry 1](https://github.com/STP-KAS/tn10-storm-2026-11-11-prerun-24-retry-1/blob/main/counts/desk/TARGET.md)).
+
 ## What a guest carrier is here
 
 The guest is [biryukovmaxim/vprog-tictactoe](https://github.com/biryukovmaxim/vprog-tictactoe), a vprogs guest program (plan section F). A *carrier* is that stack's own word for an ordinary L1 transaction that carries one lane action in its payload: `TX_VERSION_TOCCATA` (version 1), a user-lane subnetwork id (`[lane id, 16 zero bytes]`, KIP-21), one funding input, any extra outputs first, change last (vprogs `app-kit/src/lane.rs`, `signed_carrier_transaction`). The payload is `access list || signers || actions || tail` (`app-kit/src/payload.rs`). A deposit carrier also pays a P2SH covenant deposit output.
 
-One match, as the upstream driver `ttflow` runs it, is nine carriers, one after another: Init, Deposit A, Deposit B, CreateGame, JoinGame, Turn A, Turn B, Withdraw (Transfer is off by default). Any one of them landing on the desk node meets the plan's line; the run records how many did.
+One match, as the upstream driver `ttflow` runs it, is eight carriers, one after another: Init, Deposit A, Deposit B, CreateGame, JoinGame, Turn A, Turn B, Withdraw (Transfer is off by default). Any one of them landing on the desk node meets the plan's line; the run records how many did.
 
 ## What is used, and what is not
 
@@ -45,7 +52,7 @@ The deposit carrier's mass is storage mass, set by its 1 tKAS output. The others
 ## Funding need
 
 - **Per carrier:** about 0.001 tKAS fee for an action carrier, and about 1.01 tKAS for a deposit carrier (1 tKAS goes into the covenant). In exec mode nothing settles, so treat deposits as spent.
-- **Per match** (nine carriers, two deposits): about 2.03 tKAS, plus `ttd`'s one bootstrap transaction for the fresh covenant. We have not measured that transaction yet; the first live run records it.
+- **Per match** (eight carriers, two deposits): about 2.03 tKAS, plus `ttd`'s one bootstrap transaction for the fresh covenant. We have not measured that transaction yet; the first live run records it.
 - **Funding move:** the plan's guest cap is 100 tKAS. At REVIEW-01's default of 10×, the move is about 1,000 tKAS from the mining wallet, as a logged step: guest operator 4 coins of 200 tKAS, guest issuer 2 coins of 100 tKAS. A few large coins on each key, never fragmented (plan section E, the #169 lesson). `arm-guest.sh` refuses to start outside 1–4 operator coins or 2–4 issuer coins of at least 20 tKAS each.
 
 ## How a run arms it
@@ -58,7 +65,7 @@ The deposit carrier's mass is storage mass, set by its 1 tKAS output. The others
 
 ## Still missing before a run can arm it
 
-- **Send path.** The binaries are Linux, so they run on the box. The desk node listens on loopback only. A run has to pick the node `TT_WRPC_URL` points at: a tunnel to the desk's node, or a TN10 node that ops OKs for this normal-rate traffic. REVIEW-01 change 3 allows only HOLD-4 payments to a free public node, so this needs a TN10 ops decision. The read-only check above used a kept public node only as a reader.
+- **Send path (used in pre-run 24 retry 1).** The binaries are Linux builds; heavy work runs on the desk, so they run there in a local Linux container (Docker Desktop's own WSL2 VM; no reboot, no compile), and `TT_WRPC_URL` in the kit's private `run.env` points at the desk's own TN10 node through Docker's built-in host gateway name. No port is published from the container and nothing is reachable from outside the desk. The kit, the binaries and the backend ELFs are baked into a local image (`COPY`, nothing built); the guest key file and the run directory are bind-mounted, the key file read-only. Before starting Docker Desktop, make sure no other local container stack is set to auto-start (restart policy `no`), or it competes for the VM's memory. The box has no private route to the desk node (no inbound either way), so the box is not a send path.
 - **Node compatibility.** The binaries use rusty-kaspa `eb0a856` client code against kaspad 2.1.0 nodes. Whether a v1 lane carrier from this build is accepted by 2.1.0 is the open question that the first live carrier answers.
 - **Older pin.** The binaries are `bcebf59` and the guest ELF is a September local build. The plan's named pin is `6d068974`. Moving to it needs a build, which the plan does not allow tonight.
 - **Funding** of the two guest keys, as a logged step from the mining wallet.
